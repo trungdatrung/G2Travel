@@ -1,6 +1,7 @@
 <?php
   require('inc/essentials.php');
   adminLogin();
+  $csrf_token = generate_csrf_token();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,6 +55,7 @@
                   </div>
                 </div>
                 <div class="modal-footer">
+                  <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                   <button type="button" onclick="carousel_picture.value=''" class="btn text-secondary shadow-none" data-bs-dismiss="modal">Huỷ</button>
                   <button type="submit" class="btn custom-bg text-white shadow-none">Tải lên</button>
                 </div>

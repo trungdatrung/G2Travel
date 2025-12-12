@@ -11,6 +11,7 @@ function add_feature()
   let data = new FormData();
   data.append('name',feature_s_form.elements['feature_name'].value);
   data.append('add_feature','');
+  data.append('csrf_token',feature_s_form.elements['csrf_token'].value);
 
   let xhr = new XMLHttpRequest();
   xhr.open("POST","ajax/features_facilities.php",true);
@@ -24,6 +25,9 @@ function add_feature()
       alert('success','New feature added!');
       feature_s_form.elements['feature_name'].value='';
       get_features();
+    }
+    else if(this.responseText == 'csrf_failed'){
+      alert('error','CSRF token validation failed!');
     }
     else{
       alert('error','Server Down!');
@@ -60,12 +64,15 @@ function rem_feature(val)
     else if(this.responseText == 'room_added'){
       alert('error','Feature is added in room!');
     }
+    else if(this.responseText == 'csrf_failed'){
+      alert('error','CSRF token validation failed!');
+    }
     else{
       alert('error','Server down!');
     }
   }
 
-  xhr.send('rem_feature='+val);
+  xhr.send('rem_feature='+val+'&csrf_token='+document.querySelector("#feature-s input[name='csrf_token']").value);
 }
 
 facility_s_form.addEventListener('submit',function(e){
@@ -80,6 +87,7 @@ function add_facility()
   data.append('icon',facility_s_form.elements['facility_icon'].files[0]);
   data.append('desc',facility_s_form.elements['facility_desc'].value);
   data.append('add_facility','');
+  data.append('csrf_token',facility_s_form.elements['csrf_token'].value);
 
   let xhr = new XMLHttpRequest();
   xhr.open("POST","ajax/features_facilities.php",true);
@@ -97,6 +105,9 @@ function add_facility()
     }
     else if(this.responseText == 'upd_failed'){
       alert('error','Image upload failed. Server Down!');
+    }
+    else if(this.responseText == 'csrf_failed'){
+      alert('error','CSRF token validation failed!');
     }
     else{
       alert('success','New facility added!');
@@ -135,12 +146,15 @@ function rem_facility(val)
     else if(this.responseText == 'room_added'){
       alert('error','Facility is added in room!');
     }
+    else if(this.responseText == 'csrf_failed'){
+      alert('error','CSRF token validation failed!');
+    }
     else{
       alert('error','Server down!');
     }
   }
 
-  xhr.send('rem_facility='+val);
+  xhr.send('rem_facility='+val+'&csrf_token='+document.querySelector("#facility-s input[name='csrf_token']").value);
 }
 
 window.onload = function(){

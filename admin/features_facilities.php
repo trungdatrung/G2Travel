@@ -2,6 +2,7 @@
   require('inc/essentials.php');
   require('inc/db_config.php');
   adminLogin();
+  $csrf_token = generate_csrf_token();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,6 +100,7 @@
             </div>
           </div>
           <div class="modal-footer">
+            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
             <button type="reset" class="btn text-secondary shadow-none" data-bs-dismiss="modal">Huỷ</button>
             <button type="submit" class="btn custom-bg text-white shadow-none">Cập nhật</button>
           </div>
@@ -131,6 +133,7 @@
             </div>
           </div>
           <div class="modal-footer">
+            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
             <button type="reset" class="btn text-secondary shadow-none" data-bs-dismiss="modal">Huỷ</button>
             <button type="submit" class="btn custom-bg text-white shadow-none">Cập nhật</button>
           </div>

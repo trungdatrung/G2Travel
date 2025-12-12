@@ -1,6 +1,10 @@
 :root{
   --teal: #2D6A4F;
-  --teal_hover: #2D6A4F;
+  --teal_hover: #275a42;
+  --forest-green: #2D6A4F;
+  --light-moss-green: #B7E4C7;
+  --cream: #FFF8E1;
+  --earthy-tan: #DDA15E;
 }
 
 *{

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,51 +8,51 @@
   <?php require('inc/links.php'); ?>
   <title><?php echo $settings_r['site_title'] ?> - Confirm Booking</title>
 </head>
+
 <body class="bg-light">
 
   <?php require('inc/header.php'); ?>
 
-  <?php 
+  <?php
 
-    /*
-      Check room id from url is present or not
-      Shutdown mode is active or not
-      User is logged in or not
-    */
+  /*
+    Check room id from url is present or not
+    Shutdown mode is active or not
+    User is logged in or not
+  */
 
-    if(!isset($_GET['id']) || $settings_r['shutdown']==true){
-      redirect('rooms.php');
-    }
-    else if(!(isset($_SESSION['login']) && $_SESSION['login']==true)){
-      redirect('rooms.php');
-    }
+  if (!isset($_GET['id']) || $settings_r['shutdown'] == true) {
+    redirect('rooms.php');
+  } else if (!(isset($_SESSION['login']) && $_SESSION['login'] == true)) {
+    redirect('rooms.php');
+  }
 
-    // filter and get room and user data
+  // filter and get room and user data
+  
+  $data = filteration($_GET);
 
-    $data = filteration($_GET);
+  $room_res = select("SELECT * FROM `rooms` WHERE `id`=? AND `status`=? AND `removed`=?", [$data['id'], 1, 0], 'iii');
 
-    $room_res = select("SELECT * FROM `rooms` WHERE `id`=? AND `status`=? AND `removed`=?",[$data['id'],1,0],'iii');
+  if (mysqli_num_rows($room_res) == 0) {
+    redirect('rooms.php');
+  }
 
-    if(mysqli_num_rows($room_res)==0){
-      redirect('rooms.php');
-    }
+  $room_data = mysqli_fetch_assoc($room_res);
 
-    $room_data = mysqli_fetch_assoc($room_res);
-
-    $_SESSION['room'] = [
-      "id" => $room_data['id'],
-      "name" => $room_data['name'],
-      "price" => $room_data['price'],
-      "payment" => null,
-      "available" => false,
-    ];
+  $_SESSION['room'] = [
+    "id" => $room_data['id'],
+    "name" => $room_data['name'],
+    "price" => $room_data['price'],
+    "payment" => null,
+    "available" => false,
+  ];
 
 
-    $user_res = select("SELECT * FROM `user_cred` WHERE `id`=? LIMIT 1", [$_SESSION['uId']], "i");
-    $user_data = mysqli_fetch_assoc($user_res);
+  $user_res = select("SELECT * FROM `user_cred` WHERE `id`=? LIMIT 1", [$_SESSION['uId']], "i");
+  $user_data = mysqli_fetch_assoc($user_res);
 
   ?>
-  
+
   <div class="container">
     <div class="row">
 
@@ -66,24 +67,51 @@
         </div>
       </div>
 
+      <?php
+      if (isset($_GET['error'])) {
+        $error_msg = '';
+        switch ($_GET['error']) {
+          case 'check_in_out_equal':
+            $error_msg = 'You cannot check-out on the same day!';
+            break;
+          case 'check_out_earlier':
+            $error_msg = 'Check-out date is earlier than check-in date!';
+            break;
+          case 'check_in_earlier':
+            $error_msg = "Check-in date is earlier than today's date!";
+            break;
+          case 'unavailable':
+            $error_msg = 'Room not available for this check-in date!';
+            break;
+          case 'price_mismatch':
+            $error_msg = 'The price has been changed. Please check the new price.';
+            break;
+          default:
+            $error_msg = 'An unknown error occurred.';
+        }
+        echo "<div class='col-12 px-4'><div class='alert alert-danger'>$error_msg</div></div>";
+      }
+      ?>
+
       <div class="col-lg-7 col-md-12 px-4">
-        <?php 
+        <?php
 
-          $room_thumb = ROOMS_IMG_PATH."thumbnail.jpg";
-          $thumb_q = mysqli_query($con,"SELECT * FROM `room_images` 
-            WHERE `room_id`='$room_data[id]' 
-            AND `thumb`='1'");
+        $room_thumb = ROOMS_IMG_PATH . "thumbnail.jpg";
+        $thumb_q = select("SELECT * FROM `room_images` WHERE `room_id`=? AND `thumb`=?", [$room_data['id'], 1], 'is');
 
-          if(mysqli_num_rows($thumb_q)>0){
-            $thumb_res = mysqli_fetch_assoc($thumb_q);
-            $room_thumb = ROOMS_IMG_PATH.$thumb_res['image'];
-          }
+        if (mysqli_num_rows($thumb_q) > 0) {
+          $thumb_res = mysqli_fetch_assoc($thumb_q);
+          $room_thumb = ROOMS_IMG_PATH . $thumb_res['image'];
+        }
 
-          echo<<<data
+        $safe_room_name = htmlspecialchars($room_data['name']);
+        $safe_room_price = htmlspecialchars($room_data['price']);
+
+        echo <<<data
             <div class="card p-3 shadow-sm rounded">
               <img src="$room_thumb" class="img-fluid rounded mb-3">
-              <h5>$room_data[name]</h5>
-              <h6>$room_data[price] VND / person</h6>
+              <h5>$safe_room_name</h5>
+              <h6>$safe_room_price VND / person</h6>
             </div>
           data;
 
@@ -98,33 +126,39 @@
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Name</label>
-                  <input name="name" type="text" value="<?php echo $user_data['name'] ?>" class="form-control shadow-none" required>
+                  <input name="name" type="text" value="<?php echo htmlspecialchars($user_data['name']); ?>"
+                    class="form-control shadow-none" required>
                 </div>
                 <div class="col-md-6 mb-3">
-                  <label class="form-label">Số điện thoại</label>
-                  <input name="phonenum" type="number" value="<?php echo $user_data['phonenum'] ?>" class="form-control shadow-none" required>
+                  <label class="form-label">Phone Number</label>
+                  <input name="phonenum" type="number" value="<?php echo htmlspecialchars($user_data['phonenum']); ?>"
+                    class="form-control shadow-none" required>
                 </div>
                 <div class="col-md-12 mb-3">
-                  <label class="form-label">Địa chỉ</label>
-                  <textarea name="address" class="form-control shadow-none" rows="1" required><?php echo $user_data['address'] ?></textarea>
+                  <label class="form-label">Address</label>
+                  <textarea name="address" class="form-control shadow-none" rows="1"
+                    required><?php echo htmlspecialchars($user_data['address']); ?></textarea>
                 </div>
                 <div class="col-md-6 mb-3">
-                  <label class="form-label">Nhận phòng</label>
-                  <input name="checkin" onchange="check_availability()" type="date" class="form-control shadow-none" required>
+                  <label class="form-label">Check-in</label>
+                  <input name="checkin" onchange="check_availability()" type="date" class="form-control shadow-none"
+                    required>
                 </div>
                 <div class="col-md-6 mb-4">
-                  <label class="form-label">Trả phòng</label>
-                  <input name="checkout" onchange="check_availability()" type="date" class="form-control shadow-none" required>
+                  <label class="form-label">Check-out</label>
+                  <input name="checkout" onchange="check_availability()" type="date" class="form-control shadow-none"
+                    required>
                 </div>
-                
+                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                 <div class="col-12">
                   <div class="spinner-border text-info mb-3 d-none" id="info_loader" role="status">
-                    <span class="visually-hidden">Xin vui lòng chờ...</span>
+                    <span class="visually-hidden">Please wait...</span>
                   </div>
 
-                  <h6 class="mb-3 text-danger" id="pay_info">Chọn ngày nhận phòng và trả phòng!</h6>
+                  <h6 class="mb-3 text-danger" id="pay_info">Provide check-in & check-out date!</h6>
 
-                  <button name="pay_now" class="btn w-100 text-white custom-bg shadow-none mb-1" disabled>Thanh toán</button>
+                  <button name="pay_now" class="btn w-100 text-white custom-bg shadow-none mb-1" disabled>Pay
+                    Now</button>
                 </div>
               </div>
             </form>
@@ -143,47 +177,44 @@
     let info_loader = document.getElementById('info_loader');
     let pay_info = document.getElementById('pay_info');
 
-    function check_availability()
-    {
+    function check_availability() {
       let checkin_val = booking_form.elements['checkin'].value;
       let checkout_val = booking_form.elements['checkout'].value;
 
-      booking_form.elements['pay_now'].setAttribute('disabled',true);
+      booking_form.elements['pay_now'].setAttribute('disabled', true);
 
-      if(checkin_val!='' && checkout_val!='')
-      {
+      if (checkin_val != '' && checkout_val != '') {
         pay_info.classList.add('d-none');
-        pay_info.classList.replace('text-dark','text-danger');
+        pay_info.classList.replace('text-dark', 'text-danger');
         info_loader.classList.remove('d-none');
 
         let data = new FormData();
 
-        data.append('check_availability','');
-        data.append('check_in',checkin_val);
-        data.append('check_out',checkout_val);
+        data.append('check_availability', '');
+        data.append('check_in', checkin_val);
+        data.append('check_out', checkout_val);
 
         let xhr = new XMLHttpRequest();
-        xhr.open("POST","ajax/confirm_booking.php",true);
+        xhr.open("POST", "ajax/confirm_booking.php", true);
 
-        xhr.onload = function()
-        {
+        xhr.onload = function () {
           let data = JSON.parse(this.responseText);
 
-          if(data.status == 'check_in_out_equal'){
+          if (data.status == 'check_in_out_equal') {
             pay_info.innerText = "You cannot check-out on the same day!";
           }
-          else if(data.status == 'check_out_earlier'){
+          else if (data.status == 'check_out_earlier') {
             pay_info.innerText = "Check-out date is earlier than check-in date!";
           }
-          else if(data.status == 'check_in_earlier'){
+          else if (data.status == 'check_in_earlier') {
             pay_info.innerText = "Check-in date is earlier than today's date!";
           }
-          else if(data.status == 'unavailable'){
+          else if (data.status == 'unavailable') {
             pay_info.innerText = "Room not available for this check-in date!";
           }
-          else{
-            pay_info.innerHTML = "No. of Days: "+data.days+"<br>Total Amount to Pay: "+data.payment+" VND";
-            pay_info.classList.replace('text-danger','text-dark');
+          else {
+            pay_info.innerHTML = "No. of Days: " + data.days + "<br>Total Amount to Pay: " + data.payment + " VND";
+            pay_info.classList.replace('text-danger', 'text-dark');
             booking_form.elements['pay_now'].removeAttribute('disabled');
           }
 
@@ -199,4 +230,5 @@
   </script>
 
 </body>
+
 </html>

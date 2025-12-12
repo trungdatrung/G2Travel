@@ -40,25 +40,26 @@
             <div class="row">
               <div class="col-md-4 mb-3">
                 <label class="form-label">Name</label>
-                <input name="name" type="text" value="<?php echo $u_fetch['name'] ?>" class="form-control shadow-none" required>
+                <input name="name" type="text" value="<?php echo htmlspecialchars($u_fetch['name']); ?>" class="form-control shadow-none" required>
               </div>
               <div class="col-md-4 mb-3">
                 <label class="form-label">Phone Number</label>
-                <input name="phonenum" type="number" value="<?php echo $u_fetch['phonenum'] ?>" class="form-control shadow-none" required>
+                <input name="phonenum" type="number" value="<?php echo htmlspecialchars($u_fetch['phonenum']); ?>" class="form-control shadow-none" required>
               </div>
               <div class="col-md-4 mb-3">
                 <label class="form-label">Date of Birth</label>
-                <input name="dob" type="date" value="<?php echo $u_fetch['dob'] ?>" class="form-control shadow-none" required>
+                <input name="dob" type="date" value="<?php echo htmlspecialchars($u_fetch['dob']); ?>" class="form-control shadow-none" required>
               </div>
               <div class="col-md-4 mb-3">
                 <label class="form-label">PIN Code</label>
-                <input name="pincode" type="number" value="<?php echo $u_fetch['pincode'] ?>" class="form-control shadow-none" required>
+                <input name="pincode" type="number" value="<?php echo htmlspecialchars($u_fetch['pincode']); ?>" class="form-control shadow-none" required>
               </div>
               <div class="col-md-8 mb-4">
                 <label class="form-label">Address</label>
-                <textarea name="address" class="form-control shadow-none" rows="1" required><?php echo $u_fetch['address'] ?></textarea>
+                <textarea name="address" class="form-control shadow-none" rows="1" required><?php echo htmlspecialchars($u_fetch['address']); ?></textarea>
               </div>
             </div>
+            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
             <button type="submit" class="btn text-white custom-bg shadow-none">Save Changes</button>
           </form>
         </div>
@@ -68,11 +69,11 @@
         <div class="bg-white p-3 p-md-4 rounded shadow-sm">
           <form id="profile-form">
             <h5 class="mb-3 fw-bold">Profile Picture</h5>
-            <img src="<?php echo USERS_IMG_PATH.$u_fetch['profile'] ?>" class="rounded-circle img-fluid mb-3">
+            <img src="<?php echo htmlspecialchars(USERS_IMG_PATH.$u_fetch['profile']); ?>" class="rounded-circle img-fluid mb-3">
 
             <label class="form-label">Upload New Picture</label>
             <input name="profile" type="file" accept=".jpg, .jpeg, .png, .webp" class="mb-4 form-control shadow-none" required>
-
+            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
             <button type="submit" class="btn text-white custom-bg shadow-none">Save Changes</button>
           </form>
         </div>
@@ -93,6 +94,7 @@
                 <input name="confirm_pass" type="password" class="form-control shadow-none" required>
               </div>
             </div>
+            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
             <button type="submit" class="btn text-white custom-bg shadow-none">Save Changes</button>
           </form>
         </div>
@@ -119,6 +121,7 @@
       data.append('address',info_form.elements['address'].value);
       data.append('pincode',info_form.elements['pincode'].value);
       data.append('dob',info_form.elements['dob'].value);
+      data.append('csrf_token',info_form.elements['csrf_token'].value);
 
       let xhr = new XMLHttpRequest();
       xhr.open("POST","ajax/profile.php",true);
@@ -129,6 +132,9 @@
         }
         else if(this.responseText == 0){
           alert('error',"Không có thay đổi ghi nhận!");
+        }
+        else if(this.responseText == 'csrf_failed'){
+          alert('error',"CSRF token validation failed!");
         }
         else{
           alert('success','Cập nhật thành công!');
@@ -148,6 +154,7 @@
       let data = new FormData();
       data.append('profile_form','');
       data.append('profile',profile_form.elements['profile'].files[0]);
+      data.append('csrf_token',profile_form.elements['csrf_token'].value);
 
       let xhr = new XMLHttpRequest();
       xhr.open("POST","ajax/profile.php",true);
@@ -162,6 +169,9 @@
         }
         else if(this.responseText == 0){
           alert('error',"Cập nhật thất bại!");
+        }
+        else if(this.responseText == 'csrf_failed'){
+          alert('error',"CSRF token validation failed!");
         }
         else{
           window.location.href=window.location.pathname;
@@ -190,6 +200,7 @@
       data.append('pass_form','');
       data.append('new_pass',new_pass);
       data.append('confirm_pass',confirm_pass);
+      data.append('csrf_token',pass_form.elements['csrf_token'].value);
 
       let xhr = new XMLHttpRequest();
       xhr.open("POST","ajax/profile.php",true);
@@ -201,6 +212,9 @@
         }
         else if(this.responseText == 0){
           alert('error',"Cập nhật thất bại!");
+        }
+        else if(this.responseText == 'csrf_failed'){
+          alert('error',"CSRF token validation failed!");
         }
         else{
           alert('success','Cập nhật thành công!');

@@ -1,6 +1,6 @@
 <nav id="nav-bar" class="navbar navbar-expand-lg navbar-light bg-white px-lg-3 py-lg-2 shadow-sm sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand me-5 fw-bold fs-3 h-font" href="index.php"><?php echo $settings_r['site_title'] ?></a>
+    <a class="navbar-brand me-5 fw-bold fs-3 h-font" href="index.php"><?php echo htmlspecialchars($settings_r['site_title']); ?></a>
     <button class="navbar-toggler shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -27,11 +27,13 @@
           if(isset($_SESSION['login']) && $_SESSION['login']==true)
           {
             $path = USERS_IMG_PATH;
+            $safe_pic = htmlspecialchars($path . $_SESSION['uPic']);
+            $safe_name = htmlspecialchars($_SESSION['uName']);
             echo<<<data
               <div class="btn-group">
                 <button type="button" class="btn btn-outline-dark shadow-none dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-                  <img src="$path$_SESSION[uPic]" style="width: 25px; height: 25px;" class="me-1 rounded-circle">
-                  $_SESSION[uName]
+                  <img src="$safe_pic" style="width: 25px; height: 25px;" class="me-1 rounded-circle">
+                  $safe_name
                 </button>
                 <ul class="dropdown-menu dropdown-menu-lg-end">
                   <li><a class="dropdown-item" href="profile.php">My Profile</a></li>
@@ -77,6 +79,7 @@
             <label class="form-label">Password</label>
             <input type="password" name="pass" required class="form-control shadow-none">
           </div>
+          <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
           <div class="d-flex align-items-center justify-content-between mb-2">
             <button type="submit" class="btn btn-dark shadow-none">Continue</button>
             <button type="button" class="btn text-secondary text-decoration-none shadow-none p-0" data-bs-toggle="modal" data-bs-target="#forgotModal" data-bs-dismiss="modal">
@@ -140,6 +143,7 @@
               </div>
             </div>
           </div>
+          <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
           <div class="text-center my-1">
             <button type="submit" class="btn btn-dark shadow-none">Register</button>
           </div>

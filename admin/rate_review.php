@@ -1,61 +1,54 @@
 <?php
-  require('inc/essentials.php');
-  require('inc/db_config.php');
-  adminLogin();
+require('inc/essentials.php');
+require('inc/db_config.php');
+adminLogin();
 
-  if(isset($_GET['seen']))
-  {
-    $frm_data = filteration($_GET);
+if (isset($_GET['seen'])) {
+  $frm_data = filteration($_GET);
 
-    if($frm_data['seen']=='all'){
-      $q = "UPDATE `rating_review` SET `seen`=?";
-      $values = [1];
-      if(update($q,$values,'i')){
-        alert('success','Đã xem tất cả đánh giá!');
-      }
-      else{
-        alert('error','Thao tác thất bại!');
-      }
+  if ($frm_data['seen'] == 'all') {
+    $q = "UPDATE `rating_review` SET `seen`=?";
+    $values = [1];
+    if (update($q, $values, 'i')) {
+      alert('success', 'Marked all reviews as read!');
+    } else {
+      alert('error', 'Operation failed!');
     }
-    else{
-      $q = "UPDATE `rating_review` SET `seen`=? WHERE `sr_no`=?";
-      $values = [1,$frm_data['seen']];
-      if(update($q,$values,'ii')){
-        alert('success','Đã xem đánh giá!');
-      }
-      else{
-        alert('error','Thao tác thất bại!');
-      }
+  } else {
+    $q = "UPDATE `rating_review` SET `seen`=? WHERE `sr_no`=?";
+    $values = [1, $frm_data['seen']];
+    if (update($q, $values, 'ii')) {
+      alert('success', 'Marked as read!');
+    } else {
+      alert('error', 'Operation failed!');
     }
   }
+}
 
-  if(isset($_GET['del']))
-  {
-    $frm_data = filteration($_GET);
+if (isset($_GET['del'])) {
+  $frm_data = filteration($_GET);
 
-    if($frm_data['del']=='all'){
-      $q = "DELETE FROM `rating_review`";
-      if(mysqli_query($con,$q)){
-        alert('success','Đã xoá tất cả đánh giá!');
-      }
-      else{
-        alert('error','Thao tác thất bại!');
-      }
+  if ($frm_data['del'] == 'all') {
+    $q = "DELETE FROM `rating_review`";
+    if (mysqli_query($con, $q)) {
+      alert('success', 'All reviews deleted!');
+    } else {
+      alert('error', 'Operation failed!');
     }
-    else{
-      $q = "DELETE FROM `rating_review` WHERE `sr_no`=?";
-      $values = [$frm_data['del']];
-      if(delete($q,$values,'i')){
-        alert('success','Đã xoá đánh giá!');
-      }
-      else{
-        alert('error','Thao tác thất bại!');
-      }
+  } else {
+    $q = "DELETE FROM `rating_review` WHERE `sr_no`=?";
+    $values = [$frm_data['del']];
+    if (delete($q, $values, 'i')) {
+      alert('success', 'Review deleted!');
+    } else {
+      alert('error', 'Operation failed!');
     }
   }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -63,6 +56,7 @@
   <title>Trang quản lý - Đánh giá</title>
   <?php require('inc/links.php'); ?>
 </head>
+
 <body class="bg-light">
 
   <?php require('inc/header.php'); ?>
@@ -76,11 +70,11 @@
           <div class="card-body">
 
             <div class="text-end mb-4">
-              <a href="?seen=all" class="btn btn-dark rounded-pill shadow-none btn-sm">
-                <i class="bi bi-check-all"></i> Đã xem tất cả
+              <a href="?seen=all" class="btn btn-dark shadow-none btn-sm">
+                Mark all as read
               </a>
-              <a href="?del=all" class="btn btn-danger rounded-pill shadow-none btn-sm">
-                <i class="bi bi-trash"></i> Xoá tất cả
+              <a href="?del=all" class="btn btn-danger shadow-none btn-sm">
+                Delete all
               </a>
             </div>
 
@@ -98,38 +92,42 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php 
-                    $q = "SELECT rr.*,uc.name AS uname, r.name AS rname FROM `rating_review` rr
+                  <?php
+                  $q = "SELECT rr.*,uc.name AS uname, r.name AS rname FROM `rating_review` rr
                       INNER JOIN `user_cred` uc ON rr.user_id = uc.id
                       INNER JOIN `rooms` r ON rr.room_id = r.id
                       ORDER BY `sr_no` DESC";
 
-                    $data = mysqli_query($con,$q);
-                    $i=1;
+                  $data = mysqli_query($con, $q);
+                  $i = 1;
 
-                    while($row = mysqli_fetch_assoc($data))
-                    {
-                      $date = date('d-m-Y',strtotime($row['datentime']));
+                  while ($row = mysqli_fetch_assoc($data)) {
+                    $date = date('d-m-Y', strtotime($row['datentime']));
 
-                      $seen='';
-                      if($row['seen']!=1){
-                        $seen = "<a href='?seen=$row[sr_no]' class='btn btn-sm rounded-pill btn-primary mb-2'>Mark as read</a> <br>";
-                      }
-                      $seen.="<a href='?del=$row[sr_no]' class='btn btn-sm rounded-pill btn-danger'>Delete</a>";
+                    $seen = '';
+                    if ($row['seen'] != 1) {
+                      $seen = "<a href='?seen=" . htmlspecialchars($row['sr_no']) . "' class='btn btn-sm btn-primary mb-2'>Mark as read</a> <br>";
+                    }
+                    $seen .= "<a href='?del=" . htmlspecialchars($row['sr_no']) . "' class='btn btn-sm btn-danger'>Delete</a>";
 
-                      echo<<<query
+                    $rname = htmlspecialchars($row['rname']);
+                    $uname = htmlspecialchars($row['uname']);
+                    $rating = htmlspecialchars($row['rating']);
+                    $review = htmlspecialchars($row['review']);
+
+                    echo <<<query
                         <tr>
                           <td>$i</td>
-                          <td>$row[rname]</td>
-                          <td>$row[uname]</td>
-                          <td>$row[rating]</td>
-                          <td>$row[review]</td>
+                          <td>$rname</td>
+                          <td>$uname</td>
+                          <td>$rating</td>
+                          <td>$review</td>
                           <td>$date</td>
                           <td>$seen</td>
                         </tr>
                       query;
-                      $i++;
-                    }
+                    $i++;
+                  }
                   ?>
                 </tbody>
               </table>
@@ -142,9 +140,10 @@
       </div>
     </div>
   </div>
-  
+
 
   <?php require('inc/scripts.php'); ?>
 
 </body>
+
 </html>

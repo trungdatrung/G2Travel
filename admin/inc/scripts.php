@@ -6,12 +6,24 @@
   {
     let bs_class = (type == 'success') ? 'alert-success' : 'alert-danger';
     let element = document.createElement('div');
+
+    let strong = document.createElement('strong');
+    strong.textContent = msg;
+    strong.classList.add('me-3');
+    
+    let button = document.createElement('button');
+    button.type = 'button';
+    button.classList.add('btn-close');
+    button.setAttribute('data-bs-dismiss','alert');
+    button.setAttribute('aria-label','Close');
+
     element.innerHTML = `
       <div class="alert ${bs_class} alert-dismissible fade show" role="alert">
-        <strong class="me-3">${msg}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     `;
+    element.firstChild.appendChild(strong);
+    element.firstChild.appendChild(button);
+
 
     if(position=='body'){
       document.body.append(element);

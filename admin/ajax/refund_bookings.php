@@ -34,15 +34,15 @@
           <td>$i</td>
           <td>
             <span class='badge bg-primary'>
-              Order ID: $data[order_id]
+              Order ID: ".htmlspecialchars($data['order_id'])."
             </span>
             <br>
-            <b>Name:</b> $data[user_name]
+            <b>Name:</b> ".htmlspecialchars($data['user_name'])."
             <br>
-            <b>Phone No:</b> $data[phonenum]
+            <b>Phone No:</b> ".htmlspecialchars($data['phonenum'])."
           </td>
           <td>
-            <b>Room:</b> $data[room_name]
+            <b>Room:</b> ".htmlspecialchars($data['room_name'])."
             <br>
             <b>Check-in:</b> $checkin
             <br>
@@ -51,10 +51,10 @@
             <b>Date:</b> $date
           </td>
           <td>
-            <b>$data[trans_amt] VND</b> 
+            <b>".htmlspecialchars($data['trans_amt'])." VND</b> 
           </td>
           <td>
-            <button type='button' onclick='refund_booking($data[booking_id])' class='btn btn-success btn-sm fw-bold shadow-none'>
+            <button type='button' onclick='refund_booking(".htmlspecialchars($data['booking_id']).")' class='btn btn-success btn-sm fw-bold shadow-none'>
               <i class='bi bi-cash-stack'></i> Refund
             </button>
           </td>
@@ -69,11 +69,15 @@
 
   if(isset($_POST['refund_booking']))
   {
+    if(!verify_csrf_token($_POST['csrf_token'])){
+      echo 'csrf_failed';
+      exit;
+    }
     $frm_data = filteration($_POST);
 
-    $query = "UPDATE `booking_order` SET `refund`=? WHERE `booking_id`=?";
-    $values = [1,$frm_data['booking_id']];
-    $res = update($query,$values,'ii');
+    $query = "UPDATE `booking_order` SET `refund`=? WHERE `booking_id`=? AND `booking_status`=? AND `refund`=?";
+    $values = [1,$frm_data['booking_id'],'cancelled',0];
+    $res = update($query,$values,'iisi');
 
     echo $res;
   }

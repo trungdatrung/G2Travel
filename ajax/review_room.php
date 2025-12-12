@@ -3,9 +3,7 @@
   require('../admin/inc/db_config.php');
   require('../admin/inc/essentials.php');
 
-  
   session_start();
-
 
   if(!(isset($_SESSION['login']) && $_SESSION['login']==true)){
     redirect('index.php');
@@ -13,7 +11,22 @@
 
   if(isset($_POST['review_form']))
   {
+    if(!verify_csrf_token($_POST['csrf_token'])){
+      echo 'csrf_failed';
+      exit;
+    }
     $frm_data = filteration($_POST);
+
+    // Check if a review has already been submitted
+    $chk_q = "SELECT `rate_review` FROM `booking_order` WHERE `booking_id`=? AND `user_id`=?";
+    $chk_v = [$frm_data['booking_id'], $_SESSION['uId']];
+    $chk_res = select($chk_q, $chk_v, 'ii');
+    $chk_fetch = mysqli_fetch_assoc($chk_res);
+
+    if($chk_fetch['rate_review']==1){
+      echo 'already_reviewed';
+      exit;
+    }
 
     $upd_query = "UPDATE `booking_order` SET `rate_review`=? WHERE `booking_id`=? AND `user_id`=?";
     $upd_values = [1,$frm_data['booking_id'],$_SESSION['uId']];

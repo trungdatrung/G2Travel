@@ -21,10 +21,10 @@
     {
       $frm_data = filteration($_GET);
 
-      $checkin_default = $frm_data['checkin'];
-      $checkout_default = $frm_data['checkout'];
-      $adult_default = $frm_data['adult'];
-      $children_default = $frm_data['children'];
+      $checkin_default = htmlspecialchars($frm_data['checkin']);
+      $checkout_default = htmlspecialchars($frm_data['checkout']);
+      $adult_default = htmlspecialchars($frm_data['adult']);
+      $children_default = htmlspecialchars($frm_data['children']);
     }
   ?>
 
@@ -66,10 +66,12 @@
                   $facilities_q = selectAll('facilities');
                   while($row = mysqli_fetch_assoc($facilities_q))
                   {
+                    $safe_id = htmlspecialchars($row['id']);
+                    $safe_name = htmlspecialchars($row['name']);
                     echo<<<facilities
                       <div class="mb-2">
-                        <input type="checkbox" onclick="fetch_rooms()" name="facilities" value="$row[id]" class="form-check-input shadow-none me-1" id="$row[id]">
-                        <label class="form-check-label" for="$row[id]">$row[name]</label>
+                        <input type="checkbox" onclick="fetch_rooms()" name="facilities" value="$safe_id" class="form-check-input shadow-none me-1" id="$safe_id">
+                        <label class="form-check-label" for="$safe_id">$safe_name</label>
                       </div>
                     facilities;
                   }

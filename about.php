@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link  rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css">
   <?php require('inc/links.php'); ?>
   <title><?php echo $settings_r['site_title'] ?> - About Us</title>
   <style>
-    .box{
+    .box {
       border-top-color: var(--teal) !important;
     }
   </style>
 </head>
+
 <body class="bg-light">
 
   <?php require('inc/header.php'); ?>
@@ -21,8 +23,8 @@
     <h2 class="fw-bold h-font text-center">ABOUT US</h2>
     <div class="h-line bg-dark"></div>
     <p class="text-center mt-3">
-      Students of Class K23 - Nguyen Tat Thanh University - Faculty of Information Technology <br>
-      Group 5 - 23DTH2D
+      G2Travel <br>
+      Group 2
     </p>
   </div>
 
@@ -31,12 +33,12 @@
       <div class="col-lg-6 col-md-5 mb-4 order-lg-1 order-md-1 order-2">
         <h3 class="mb-3">Acknowledgments</h3>
         <p>
-        We would like to express our gratitude to the teachers at Nguyen Tat Thanh University, Faculty of Information Technology, who have provided enthusiastic assistance and support throughout our studies. <br><br>
-        Special thanks to Ms. Nguyen Thi Hoai Thu for directly helping, supporting, and guiding us to complete this thesis.
+          We would like to express our gratitude to the fans, our love to the chats for inspiring us W in the CHAT
+          please !!
         </p>
       </div>
       <div class="col-lg-5 col-md-5 mb-4 order-lg-2 order-md-2 order-1">
-        <img src="images/about/about.jpg" class="w-100">
+        <img src="images/about/chill-guy.png" class="w-100">
       </div>
     </div>
   </div>
@@ -75,18 +77,19 @@
   <div class="container px-4">
     <div class="swiper mySwiper">
       <div class="swiper-wrapper mb-5">
-        <?php 
-          $about_r = selectAll('team_details');
-          $path=ABOUT_IMG_PATH;
-          while($row = mysqli_fetch_assoc($about_r)){
-            echo<<<data
+        <?php
+        $about_r = selectAll('team_details');
+        $path = ABOUT_IMG_PATH;
+        while ($row = mysqli_fetch_assoc($about_r)) {
+          $safe_name = htmlspecialchars($row['name']);
+          echo <<<data
               <div class="swiper-slide bg-white text-center overflow-hidden rounded">
                 <img src="$path$row[picture]" class="w-100">
-                <h5 class="mt-2">$row[name]</h5>
+                <h5 class="mt-2">$safe_name</h5>
               </div>
             data;
-          }
-        
+        }
+
         ?>
       </div>
       <div class="swiper-pagination"></div>
@@ -123,4 +126,5 @@
 
 
 </body>
+
 </html>

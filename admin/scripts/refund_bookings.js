@@ -19,6 +19,7 @@ function refund_booking(id)
     let data = new FormData();
     data.append('booking_id',id);
     data.append('refund_booking','');
+    data.append('csrf_token',document.getElementById('csrf_token').value);
 
     let xhr = new XMLHttpRequest();
     xhr.open("POST","ajax/refund_bookings.php",true);
@@ -28,6 +29,9 @@ function refund_booking(id)
       if(this.responseText == 1){
         alert('success','Money Refunded!');
         get_bookings();
+      }
+      else if(this.responseText == 'csrf_failed'){
+        alert('error','CSRF token validation failed!');
       }
       else{
         alert('error','Server Down!');

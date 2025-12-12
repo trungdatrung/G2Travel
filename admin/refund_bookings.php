@@ -2,6 +2,7 @@
   require('inc/essentials.php');
   require('inc/db_config.php');
   adminLogin();
+  $csrf_token = generate_csrf_token();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,6 +21,7 @@
     <div class="row">
       <div class="col-lg-10 ms-auto p-4 overflow-hidden">
         <h3 class="mb-4">Hoàn tiền</h3>
+        <input type="hidden" id="csrf_token" value="<?php echo $csrf_token; ?>">
 
         <div class="card border-0 shadow-sm mb-4">
           <div class="card-body">

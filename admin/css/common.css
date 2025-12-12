@@ -45,6 +45,13 @@ input[type=number] {
   position: fixed;
   height: 100%;
   z-index: 11;
+  overflow-y: auto;
+}
+
+@media screen and (min-width: 992px) {
+  #dashboard-menu .collapse {
+    display: block !important;
+  }
 }
 
 /* width */

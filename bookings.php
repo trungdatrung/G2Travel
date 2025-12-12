@@ -16,6 +16,7 @@
       redirect('index.php');
     }
   ?>
+  <input type="hidden" id="csrf_token" value="<?php echo $csrf_token; ?>">
 
 
   <div class="container">
@@ -83,22 +84,27 @@
             // $btn="<a href='generate_pdf.php?gen_pdf&id=$data[booking_id]' class='btn btn-dark btn-sm shadow-none'>Download PDF</a>";
           }
 
+          $safe_room_name = htmlspecialchars($data['room_name']);
+          $safe_price = htmlspecialchars($data['price']);
+          $safe_order_id = htmlspecialchars($data['order_id']);
+          $safe_booking_status = htmlspecialchars($data['booking_status']);
+
           echo<<<bookings
             <div class='col-md-4 px-4 mb-4'>
               <div class='bg-white p-3 rounded shadow-sm'>
-                <h5 class='fw-bold'>$data[room_name]</h5>
-                <p>$data[price] VND / person</p>
+                <h5 class='fw-bold'>$safe_room_name</h5>
+                <p>$safe_price VND / person</p>
                 <p>
                   <b>Check in: </b> $checkin <br>
                   <b>Check out: </b> $checkout
                 </p>
                 <p>
-                  <b>Amount: </b> $data[price] VND <br>
-                  <b>Order ID: </b> $data[order_id] <br>
+                  <b>Amount: </b> $safe_price VND <br>
+                  <b>Order ID: </b> $safe_order_id <br>
                   <b>Date: </b> $date
                 </p>
                 <p>
-                  <span class='badge $status_bg'>$data[booking_status]</span>
+                  <span class='badge $status_bg'>$safe_booking_status</span>
                 </p>
                 $btn
               </div>
@@ -142,6 +148,7 @@
             
             <input type="hidden" name="booking_id">
             <input type="hidden" name="room_id">
+            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
 
             <div class="text-end">
               <button type="submit" class="btn custom-bg text-white shadow-none">SUBMIT</button>
@@ -169,7 +176,8 @@
     function cancel_booking(id)
     {
       if(confirm('Bạn có chắc muốn huỷ đặt phòng này?'))
-      {        
+      {
+        let csrf_token = document.getElementById('csrf_token').value;
         let xhr = new XMLHttpRequest();
         xhr.open("POST","ajax/cancel_booking.php",true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -178,12 +186,15 @@
           if(this.responseText==1){
             window.location.href="bookings.php?cancel_status=true";
           }
+          else if(this.responseText == 'csrf_failed'){
+            alert('error',"CSRF token validation failed!");
+          }
           else{
             alert('error','Huỷ đặt phòng không thành công!');
           }
         }
 
-        xhr.send('cancel_booking&id='+id);
+        xhr.send('cancel_booking&id='+id+'&csrf_token='+csrf_token);
       }
     }
 
@@ -204,6 +215,7 @@
       data.append('review',review_form.elements['review'].value);
       data.append('booking_id',review_form.elements['booking_id'].value);
       data.append('room_id',review_form.elements['room_id'].value);
+      data.append('csrf_token',review_form.elements['csrf_token'].value);
 
       let xhr = new XMLHttpRequest();
       xhr.open("POST","ajax/review_room.php",true);
@@ -214,6 +226,12 @@
         if(this.responseText == 1)
         {
           window.location.href = 'bookings.php?review_status=true';
+        }
+        else if(this.responseText == 'csrf_failed'){
+          alert('error',"CSRF token validation failed!");
+        }
+        else if(this.responseText == 'already_reviewed'){
+          alert('error',"You have already reviewed this booking!");
         }
         else{
           var myModal = document.getElementById('reviewModal');

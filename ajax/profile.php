@@ -3,15 +3,18 @@
   require('../admin/inc/db_config.php');
   require('../admin/inc/essentials.php');
 
-  
+  session_start();
 
   if(isset($_POST['info_form']))
   {
+    if(!verify_csrf_token($_POST['csrf_token'])){
+      echo 'csrf_failed';
+      exit;
+    }
     $frm_data = filteration($_POST);
-    session_start();
 
     $u_exist = select("SELECT * FROM `user_cred` WHERE `phonenum`=? AND `id`!=? LIMIT 1",
-      [$data['phonenum'],$_SESSION['uId']],"ss");
+      [$frm_data['phonenum'],$_SESSION['uId']],"ss");
 
     if(mysqli_num_rows($u_exist)!=0){
       echo 'phone_already';
@@ -37,8 +40,10 @@
 
   if(isset($_POST['profile_form']))
   {
-    session_start();
-
+    if(!verify_csrf_token($_POST['csrf_token'])){
+      echo 'csrf_failed';
+      exit;
+    }
     $img = uploadUserImage($_FILES['profile']);
     
     if($img == 'inv_img'){
@@ -75,8 +80,11 @@
 
   if(isset($_POST['pass_form']))
   {
+    if(!verify_csrf_token($_POST['csrf_token'])){
+      echo 'csrf_failed';
+      exit;
+    }
     $frm_data = filteration($_POST);
-    session_start();
 
     if($frm_data['new_pass']!=$frm_data['confirm_pass']){
       echo 'mismatch';

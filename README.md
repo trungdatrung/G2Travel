@@ -1,117 +1,92 @@
-# G2TRAVEL - TRAVEL & TOUR BOOKING WEBSITE
-<br>
+# G2TRAVEL - TRAVEL & TOUR BOOKING WEBSITE (Enhanced)
 
-### Table of Contents
+## Abstract
+**G2Travel** is a robust web application designed for booking travel tours and packages. It features a comprehensive **Admin Panel** for management and a user-friendly frontend for customers. This project demonstrates advanced PHP/MySQL development, including secure authentication, AJAX-driven interfaces, and file management.
 
-- [Abstract](#abstract)
-- [Software Requirements](#software-requirements)
-- [Instructions](#instructions)
-- [Screenshots](#screenshots)
-- [Reference](#reference)
-
-## ABSTRACT
-<p align="justify">Travel & tour booking websites serve as excellent practical projects for IT students looking to learn and practice web development skills. This web application allows users to search and book tours online, with common features like searching by destination, price, amenities, and direct booking through the website interface.</p>
-
-<p align="justify">Through building a travel & tour booking website, students can apply knowledge of frontend, backend, and database management. Additionally, this project helps practice implementing advanced features such as integrating customer reviews, search filters, and booking confirmation systems.</p>
-
-<p align="justify">This project not only helps students better understand the process of developing real-world web applications but also improves problem-solving skills, system organization, and building user-friendly interfaces. This is an excellent opportunity to prepare for future real projects.</p>
-
-<br>
-
-## SOFTWARE REQUIREMENTS
-<ul type="square">
-  <li> <b> Operating System : </b> Windows, MacOS, Linux</li>
-   &emsp;
-  <li> <b> Frontend : </b>
-       <p align="left"> 
-          <a href="https://www.w3.org/html/" target="_blank" > 
-            <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="50" height="50"/> 
-          </a>    
-         &emsp;
-          <a href="https://www.w3schools.com/css/" target="_blank">
-            <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg" alt="css3" width="50" height="50"/> 
-          </a> 
-         &emsp;
-         <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank"> 
-           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/>
-         </a>
-         &emsp;
-          <a href="https://getbootstrap.com" target="_blank"> 
-            <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bootstrap/bootstrap-plain-wordmark.svg" alt="bootstrap" width="40" height="40"/> 
-          </a>
-        </p> 
-  </li>
- <li> <b> Backend : </b>
-     <p align = "left">
-        <a href="https://www.php.net" target="_blank"> 
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" alt="php" width="50" height="50"/> 
-       </a>
-     </p>
-   </li>
-
-  <li> <b> Database : </b>
-     <p align="left"> 
-       <a href="https://www.mysql.com/" target="_blank">
-         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original-wordmark.svg" alt="mysql" width="50" height="50"/> 
-       </a> 
-</p>
-   </li>
-  </ul>
-  
-  <br>
-  
-## INSTRUCTIONS
-
-1. Download and install <a href="https://www.apachefriends.org/download.html">XAMPP</a>
-
-2. Download the "g2travel" folder from this GitHub repo, extract and copy the entire folder
-
-3. Paste into the 'htdocs' folder in your XAMPP root directory. (Windows: C:\Program Files\xampp\htdocs or MacOS/Linux: /Applications/XAMPP/htdocs or /opt/lampp/htdocs)
-
-4. Open PHPMyAdmin in your browser `http://localhost/phpmyadmin`
-
-5. Create a new database named "g2travel"
-
-6. Import the `vietchill.sql` file into the newly created database (Note: The SQL file will be renamed to match the new project name)
-
-7. Paste this URL into your browser `http://localhost/g2travel/index.php`
-
-8. To access the admin panel, use the following credentials:
-    
-   `http://localhost/g2travel/admin/index.php`
-
-   `username:  holden`
-   
-   `password:  12345`
-   
-<br>
+## Table of Contents
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation & Setup](#installation--setup)
+- [Usage Guide](#usage-guide)
+- [Project Structure](#project-structure)
+- [Recent Updates & Fixes](#recent-updates--fixes)
+- [Technologies](#technologies)
 
 ## Features
 
-- **User Authentication**: Secure login and registration system
-- **Tour Browsing**: Search and filter tour packages by date, price, and preferences
-- **Booking Management**: Easy booking process with real-time availability checking
-- **User Dashboard**: View booking history and manage personal profile
-- **Admin Panel**: Comprehensive admin dashboard for managing tours, bookings, and users
-- **Responsive Design**: Fully responsive layout that works on all devices
-- **Review System**: Customers can rate and review tours
-- **Contact System**: Built-in contact form for customer inquiries
+### Admin Panel
+- **Dashboard**: Real-time overview of bookings, user queries, and analytics.
+- **Room/Tour Management**: content-rich editor for adding tour packages, features, facilities, and images.
+  - *New*: Updated thumbnail management and "Image" column for quick status checks.
+- **Booking Management**: 
+  - Manage new bookings (Assign Room, Cancel).
+  - **Booking Records**: View history and **Download Receipts** (HTML/PDF-ready view).
+- **User Management**: View active users, toggle status, or remove accounts.
+- **Carousel & Team**: Drag-and-drop style image uploads for the homepage slider and "About Us" team section.
+- **Settings**: Configure site title, contact info, shutdown mode, and more.
+- **AJAX Interactions**: All major actions (Delete, Update, Active/Inactive) happen instantly without page reloads.
 
-<br>
+### User Side
+- **Responsive Design**: Fully mobile-compatible layout using Bootstrap 5.
+- **Tour Booking**: Filter by date, guest count, and facilities.
+- **User Account**: Profile management, booking history, and review system.
+- **Real-time Reviews**: Users can rate and review tours they have booked.
+- **Multilingual Support**: The public interface is fully translated to English (No hardcoded Vietnamese text).
 
-## Technologies Used
+## Prerequisites
+- **PHP** (Version 7.4 or 8.x recommended)
+- **MySQL/MariaDB**
+- **Web Server** (Apache via XAMPP/MAMP or PHP Built-in Server)
 
-- **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5
-- **Backend**: PHP 8.x
-- **Database**: MySQL/MariaDB
-- **Additional**: AJAX for dynamic content loading
+## Installation & Setup
 
-<br>
+### Option A: Using XAMPP (Standard)
+1.  **Download** and install XAMPP.
+2.  **Copy** the `G2Travel` folder to `C:\xampp\htdocs\` (Windows) or `/Applications/XAMPP/htdocs/` (Mac).
+3.  **Start** Apache and MySQL from the XAMPP Control Panel.
+4.  **Database Setup**:
+    - Go to `http://localhost/phpmyadmin`.
+    - Create a database named `vietchill` (or matching the one in `admin/inc/db_config.php`).
+    - Import `vietchill.sql`.
+5.  **Run**: Open `http://localhost/G2Travel` in your browser.
 
-## License
+### Option B: Using PHP Built-in Server (Lightweight)
+1.  **Open Terminal** in the project root directory.
+2.  **Start Server**: Run the command:
+    ```bash
+    php -S localhost:8000
+    ```
+3.  **Access**: Open `http://localhost:8000` in your browser.
+    *Note: Ensure your `admin/inc/db_config.php` points to a running MySQL instance.*
 
-This project is open source and available for educational purposes.
+## Usage Guide
 
-## References
+### Admin Credentials
+To access the backend management system, navigate to `/admin` (e.g., `http://localhost:8000/admin`).
+- **Username**: `holden`
+- **Password**: `12345`
 
-<a id="reference" href="https://github.com/tj-webdev/Hotel-Booking-Website-Assets"> Original Hotel-Booking-Website-Assets </a>
+### Generating Receipts
+In the **Booking Records** section of the Admin Panel, click "Download PDF". This opens a printable HTML receipt for the selected booking.
+
+## Project Structure
+- `admin/`: Backend logic, AJAX handlers, and UI panels.
+- `inc/`: Shared components (Header, Footer, Database Config).
+- `images/`: Stores uploaded assets (Rooms, Carousel, Users).
+- `ajax/`: Frontend AJAX handlers for booking and searching.
+- `*.php`: Frontend pages (index, rooms, about, etc.).
+
+## Recent Updates & Fixes
+- **Image Resolution Limit**: Upload limit increased from **2MB to 10MB** for high-quality photos.
+- **Realtime UI Updates**: Fixed AJAX bugs where buttons (Active/Inactive, Delete) required a page reload to show changes. They now update instantly.
+- **Carousel Stability**: Swapped unreliable `unpkg` CDN links for `jsdelivr`, fixing broken/stacking sliders.
+- **Localization**: Removed leftover Vietnamese text hardcoded in `ajax/rooms.php` and `room_details.php`.
+- **Layout Fixes**: Corrected overlay glitches on the Homepage Booking Form.
+
+## Technologies
+- **Frontend**: HTML5, CSS3, JavaScript (Vanilla + AJAX), Bootstrap 5.
+- **Backend**: PHP (Native).
+- **Database**: MySQL.
+- **Libraries**: 
+  - **SwiperJS** (via JSDelivr CDN) for carousels.
+  - **Bootstrap Icons** for UI elements.
