@@ -7,23 +7,24 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
   exit;
 }
 
-// Handle Login Check BEFORE ensuring a new token for the render
+// Handle Login POST request BEFORE generating new CSRF token
 if (isset($_POST['login'])) {
   $frm_data = filteration($_POST);
 
   // Check if csrf_token exists in POST data
   if (!isset($_POST['csrf_token']) || empty($_POST['csrf_token'])) {
-    alert('error', 'CSRF token missing from form submission!');
+    $login_error = 'CSRF token missing from form submission!';
   } else if (!verify_csrf_token($_POST['csrf_token'])) {
-    alert('error', 'CSRF token validation failed! Session token does not match.');
+    $login_error = 'CSRF token validation failed! Session token does not match.';
   } else {
-    // CSRF OK, proceed to checking credentials
+    // Token valid, proceed with login
     $query = "SELECT * FROM  `admin_cred` WHERE `admin_name`=?";
     $values = [$frm_data['admin_name']];
 
     $res = select($query, $values, "s");
     if ($res->num_rows == 1) {
       $row = mysqli_fetch_assoc($res);
+      // Check password - using password_verify for hashed passwords
       if (password_verify($frm_data['admin_pass'], $row['admin_pass'])) {
         session_regenerate_id(true);
         $_SESSION['adminLogin'] = true;
@@ -31,16 +32,21 @@ if (isset($_POST['login'])) {
         echo "<script>window.location.href='/admin/dashboard.php'</script>";
         exit;
       } else {
-        alert('error', 'Login failed - Invalid Password!');
+        $login_error = 'Login failed - Invalid Password!';
       }
     } else {
-      alert('error', 'Login failed - Invalid Username!');
+      $login_error = 'Login failed - Invalid Username!';
     }
   }
 }
 
-// Generate CSRF token for the HTML form
+// Generate NEW CSRF token for the next request/view
 $csrf_token = generate_csrf_token();
+
+// Debug: Verify token was generated and stored in session
+if (empty($csrf_token) || !isset($_SESSION['csrf_token'])) {
+  die("Error: CSRF token generation failed");
+}
 ?>
 
 <!DOCTYPE html>
@@ -82,6 +88,13 @@ $csrf_token = generate_csrf_token();
       </div>
     </form>
   </div>
+
+
+  <?php
+  if (isset($login_error)) {
+    alert('error', $login_error);
+  }
+  ?>
 
 
   <?php require('inc/scripts.php') ?>
