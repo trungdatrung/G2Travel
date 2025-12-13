@@ -1,92 +1,102 @@
-# G2TRAVEL - TRAVEL & TOUR BOOKING WEBSITE (Enhanced)
+# G2Travel - Tour & Hotel Booking System
 
-## Abstract
-**G2Travel** is a robust web application designed for booking travel tours and packages. It features a comprehensive **Admin Panel** for management and a user-friendly frontend for customers. This project demonstrates advanced PHP/MySQL development, including secure authentication, AJAX-driven interfaces, and file management.
+G2Travel is a comprehensive web-based platform designed to facilitate seamless booking experiences for travelers. It allows users to browse and book tours and hotel rooms while providing a robust admin panel for managing bookings, users, and content.
 
-## Table of Contents
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation & Setup](#installation--setup)
-- [Usage Guide](#usage-guide)
-- [Project Structure](#project-structure)
-- [Recent Updates & Fixes](#recent-updates--fixes)
-- [Technologies](#technologies)
+##  Features
 
-## Features
+### User Module
+*   **Browse & Search**: Explore available tours and hotel rooms with detailed descriptions, features, and facilities.
+*   **Booking System**: Secure booking flow with date selection and immediate confirmation logic.
+*   **User Accounts**: Register and login to manage personal profiles and view booking history.
+*   **Reviews & Ratings**: Leave feeback on booked rooms/tours.
+*   **Contact & Inquiries**: Direct messaging system to contact site administrators.
+*   **Responsive Design**: Fully responsive interface built with Bootstrap 5.
 
-### Admin Panel
-- **Dashboard**: Real-time overview of bookings, user queries, and analytics.
-- **Room/Tour Management**: content-rich editor for adding tour packages, features, facilities, and images.
-  - *New*: Updated thumbnail management and "Image" column for quick status checks.
-- **Booking Management**: 
-  - Manage new bookings (Assign Room, Cancel).
-  - **Booking Records**: View history and **Download Receipts** (HTML/PDF-ready view).
-- **User Management**: View active users, toggle status, or remove accounts.
-- **Carousel & Team**: Drag-and-drop style image uploads for the homepage slider and "About Us" team section.
-- **Settings**: Configure site title, contact info, shutdown mode, and more.
-- **AJAX Interactions**: All major actions (Delete, Update, Active/Inactive) happen instantly without page reloads.
+### Admin Module
+*   **Dashboard**: Real-time analytics showing total bookings, revenue, and user queries.
+*   **Booking Management**: View, approve, or cancel bookings. Handle refunds and payment statuses.
+*   **Room/Tour Management**: Add, edit, or remove tours and rooms. Manage associated images, facilities, and features.
+*   **User Management**: Monitor registered users and handle account verification statuses.
+*   **Settings**: Configure site details (Title, About Us) and toggle "Shutdown" mode.
+*   **carousel Management**: Update homepage slider images dynamically.
 
-### User Side
-- **Responsive Design**: Fully mobile-compatible layout using Bootstrap 5.
-- **Tour Booking**: Filter by date, guest count, and facilities.
-- **User Account**: Profile management, booking history, and review system.
-- **Real-time Reviews**: Users can rate and review tours they have booked.
-- **Multilingual Support**: The public interface is fully translated to English (No hardcoded Vietnamese text).
+##  Tech Stack
 
-## Prerequisites
-- **PHP** (Version 7.4 or 8.x recommended)
-- **MySQL/MariaDB**
-- **Web Server** (Apache via XAMPP/MAMP or PHP Built-in Server)
+*   **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5
+*   **Backend**: PHP (Native)
+*   **Database**: MySQL
+*   **Server**: Apache (via XAMPP/WAMP) or PHP Built-in Server
+*   **Payment Integration**: Simulated payment processing flow.
 
-## Installation & Setup
+---
 
-### Option A: Using XAMPP (Standard)
-1.  **Download** and install XAMPP.
-2.  **Copy** the `G2Travel` folder to `C:\xampp\htdocs\` (Windows) or `/Applications/XAMPP/htdocs/` (Mac).
-3.  **Start** Apache and MySQL from the XAMPP Control Panel.
-4.  **Database Setup**:
-    - Go to `http://localhost/phpmyadmin`.
-    - Create a database named `vietchill` (or matching the one in `admin/inc/db_config.php`).
-    - Import `vietchill.sql`.
-5.  **Run**: Open `http://localhost/G2Travel` in your browser.
+##  Project Structure
 
-### Option B: Using PHP Built-in Server (Lightweight)
-1.  **Open Terminal** in the project root directory.
-2.  **Start Server**: Run the command:
+```
+G2Travel/
+├── admin/                 # Admin panel module
+│   ├── ajax/              # AJAX handlers for admin actions
+│   ├── inc/               # Admin-specific includes (db_config, essentials)
+│   ├── scripts/           # Admin-specific JS
+│   └── ...php             # Admin pages (dashboard, bookings, rooms, etc.)
+├── inc/                   # Shared includes (header, footer, links)
+├── images/                # Static assets (uploads, site images)
+├── css/                   # Global styles
+├── vietchill.sql          # Database schema import file
+├── index.php              # Homepage
+├── rooms.php              # Rooms listing
+├── pay_now.php            # Payment processing logic
+└── ...                    # Other user-facing pages
+```
+
+---
+
+##  Installation & Setup
+
+1.  **Clone the Repository**
     ```bash
-    php -S localhost:8000
+    git clone https://github.com/trungdatrung/G2Travel.git
+    cd G2Travel
     ```
-3.  **Access**: Open `http://localhost:8000` in your browser.
-    *Note: Ensure your `admin/inc/db_config.php` points to a running MySQL instance.*
 
-## Usage Guide
+2.  **Database Setup**
+    *   Create a new MySQL database named `g2travel`.
+    *   Import the provided SQL file: `vietchill.sql` into the database.
 
-### Admin Credentials
-To access the backend management system, navigate to `/admin` (e.g., `http://localhost:8000/admin`).
-- **Username**: `holden`
-- **Password**: `12345`
+3.  **Configuration**
+    *   Open `admin/inc/db_config.php`.
+    *   Update the database credentials if necessary:
+        ```php
+        $hname = 'localhost';
+        $uname = 'root';      // Your DB Username
+        $pass = '';           // Your DB Password
+        $db = 'g2travel';
+        ```
 
-### Generating Receipts
-In the **Booking Records** section of the Admin Panel, click "Download PDF". This opens a printable HTML receipt for the selected booking.
+4.  **Run the Application**
+    *   You can use XAMPP/WAMP or the PHP built-in server.
+    *   **Using PHP built-in server**:
+        ```bash
+        php -S localhost:8000
+        ```
+    *   Access the site at `http://localhost:8000`.
 
-## Project Structure
-- `admin/`: Backend logic, AJAX handlers, and UI panels.
-- `inc/`: Shared components (Header, Footer, Database Config).
-- `images/`: Stores uploaded assets (Rooms, Carousel, Users).
-- `ajax/`: Frontend AJAX handlers for booking and searching.
-- `*.php`: Frontend pages (index, rooms, about, etc.).
+---
 
-## Recent Updates & Fixes
-- **Image Resolution Limit**: Upload limit increased from **2MB to 10MB** for high-quality photos.
-- **Realtime UI Updates**: Fixed AJAX bugs where buttons (Active/Inactive, Delete) required a page reload to show changes. They now update instantly.
-- **Carousel Stability**: Swapped unreliable `unpkg` CDN links for `jsdelivr`, fixing broken/stacking sliders.
-- **Localization**: Removed leftover Vietnamese text hardcoded in `ajax/rooms.php` and `room_details.php`.
-- **Layout Fixes**: Corrected overlay glitches on the Homepage Booking Form.
+##  Default Credentials
 
-## Technologies
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla + AJAX), Bootstrap 5.
-- **Backend**: PHP (Native).
-- **Database**: MySQL.
-- **Libraries**: 
-  - **SwiperJS** (via JSDelivr CDN) for carousels.
-  - **Bootstrap Icons** for UI elements.
+### Admin Account
+*   **URL**: `/admin/index.php`
+*   **Username**: `holden`
+*   **Password**: `12345`
+
+### Test User Account
+*   **Username**: `Trung` (or register a new user)
+*   **Password**: `12345`
+
+---
+
+##  Security Features
+*   **CSRF Protection**: All forms are protected against Cross-Site Request Forgery.
+*   **Password Hashing**: User and Admin passwords are hashed using Bcrypt.
+*   **Input Sanitization**: All user inputs are sanitized to prevent SQL Injection and XSS attacks.
