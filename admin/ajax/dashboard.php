@@ -28,7 +28,7 @@ if (isset($_POST['booking_analytics'])) {
 
   $result = mysqli_fetch_assoc(mysqli_query($con, "SELECT 
 
-      COUNT(CASE WHEN booking_status!='pending'AND booking_status!='payment failed' THEN 1 END) AS `total_bookings`,
+      COUNT(CASE WHEN booking_status!='payment failed' THEN 1 END) AS `total_bookings`,
       SUM(CASE WHEN booking_status!='pending' AND booking_status!='payment failed' THEN `trans_amt` END) AS `total_amt`,
 
       COUNT(CASE WHEN booking_status='booked' AND arrival=1 THEN 1 END) AS `active_bookings`,
